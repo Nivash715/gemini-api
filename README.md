@@ -42,7 +42,7 @@ Run the backend:
 ```bash
 cd backend
 pip install -r requirements.txt
-python app.py
-```
+python app.py\n```\n\nThe backend runs at `http://localhost:5001` by default.
 
-Open `frontend/index.html` in a browser. When opened as a local file, it defaults to `http://localhost:5000` for API calls.
+Open `frontend/index.html` in a browser. When opened as a local file, it defaults to `http://localhost:5001` for API calls.
+

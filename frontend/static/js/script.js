@@ -30,7 +30,7 @@
     const $ = (sel) => document.querySelector(sel);
     const $$ = (sel) => document.querySelectorAll(sel);
     const configuredApiBase = window.GEMINI_API_BASE_URL
-        || (window.location.protocol === 'file:' ? 'http://localhost:5000' : '');
+        || (window.location.protocol === 'file:' ? 'http://localhost:5001' : '');
     const API_BASE_URL = configuredApiBase.replace(/\/$/, '');
     const apiUrl = (path) => `${API_BASE_URL}${path.startsWith('/') ? path : `/${path}`}`;
 

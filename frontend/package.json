@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "start": "npx serve .",
-    "build": "echo \"Static frontend: no build step required\""
+    "build": "node scripts/write-config.mjs"
   },
   "devDependencies": {
     "serve": "^14.2.4"

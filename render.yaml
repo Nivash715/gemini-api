@@ -4,7 +4,7 @@ services:
     runtime: python
     rootDir: backend
     buildCommand: pip install -r requirements.txt
-    startCommand: gunicorn app:app
+    startCommand: gunicorn app:app --bind 0.0.0.0:$PORT
     envVars:
       - key: PYTHON_VERSION
         value: 3.12.5
@@ -17,10 +17,10 @@ services:
       - key: GEMINI_API_KEY
         sync: false
       - key: DATABASE_PATH
-        value: /opt/render/project/src/backend/data/chat.db
+        value: /opt/render/project/src/data/chat.db
       - key: UPLOAD_FOLDER
-        value: /opt/render/project/src/backend/data/uploads
+        value: /opt/render/project/src/data/uploads
     disk:
       name: gemini-data
-      mountPath: /opt/render/project/src/backend/data
+      mountPath: /opt/render/project/src/data
       sizeGB: 1
