@@ -1,0 +1,26 @@
+services:
+  - type: web
+    name: gemini-backend
+    runtime: python
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app:app
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.5
+      - key: FLASK_DEBUG
+        value: "False"
+      - key: CORS_ORIGINS
+        value: "*"
+      - key: SECRET_KEY
+        generateValue: true
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: DATABASE_PATH
+        value: /opt/render/project/src/backend/data/chat.db
+      - key: UPLOAD_FOLDER
+        value: /opt/render/project/src/backend/data/uploads
+    disk:
+      name: gemini-data
+      mountPath: /opt/render/project/src/backend/data
+      sizeGB: 1

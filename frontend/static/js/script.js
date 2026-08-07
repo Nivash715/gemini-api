@@ -29,6 +29,10 @@
     // =====================================================
     const $ = (sel) => document.querySelector(sel);
     const $$ = (sel) => document.querySelectorAll(sel);
+    const configuredApiBase = window.GEMINI_API_BASE_URL
+        || (window.location.protocol === 'file:' ? 'http://localhost:5000' : '');
+    const API_BASE_URL = configuredApiBase.replace(/\/$/, '');
+    const apiUrl = (path) => `${API_BASE_URL}${path.startsWith('/') ? path : `/${path}`}`;
 
     const elements = {
         sidebar: $('#sidebar'),
@@ -173,7 +177,7 @@
     // =====================================================
     async function api(url, options = {}) {
         try {
-            const response = await fetch(`/api${url}`, {
+            const response = await fetch(apiUrl(`/api${url}`), {
                 headers: { 'Content-Type': 'application/json', ...options.headers },
                 ...options,
             });
@@ -501,7 +505,7 @@
         let fullResponse = '';
 
         try {
-            const response = await fetch('/api/chat', {
+            const response = await fetch(apiUrl('/api/chat'), {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -608,7 +612,7 @@
         let fullResponse = '';
 
         try {
-            const response = await fetch('/api/chat/regenerate', {
+            const response = await fetch(apiUrl('/api/chat/regenerate'), {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ chat_id: state.currentChatId }),
@@ -712,7 +716,7 @@
             <div class="message-attachments">
                 ${attachments.map(att => {
                     if (att.type === 'image' && att.filename) {
-                        const url = escapeHtml(att.url || `/uploads/${att.filename}`);
+                        const url = escapeHtml(att.url || apiUrl(`/uploads/${att.filename}`));
                         return `<img src="${url}" alt="${escapeHtml(att.filename)}" class="message-attachment" />`;
                     }
                     const href = escapeHtml(att.url || '#');
@@ -812,7 +816,7 @@
             formData.append('file', file);
             if (state.currentChatId) formData.append('chat_id', state.currentChatId);
 
-            const response = await fetch('/api/upload-pdf', { method: 'POST', body: formData });
+            const response = await fetch(apiUrl('/api/upload-pdf'), { method: 'POST', body: formData });
             const data = await response.json();
 
             if (!response.ok) throw new Error(data.error);
@@ -867,7 +871,7 @@
             if (style) formData.append('style', style);
             if (state.currentChatId) formData.append('chat_id', state.currentChatId);
 
-            const response = await fetch('/api/upload-image', { method: 'POST', body: formData });
+            const response = await fetch(apiUrl('/api/upload-image'), { method: 'POST', body: formData });
             const data = await response.json();
 
             if (!response.ok) throw new Error(data.error);
@@ -999,7 +1003,7 @@
         }
 
         closeModal('exportModal');
-        window.open(`/api/export/${state.currentChatId}?format=${format}`, '_blank');
+        window.open(apiUrl(`/api/export/${state.currentChatId}?format=${format}`), '_blank');
         showToast(`Exporting as ${format.toUpperCase()}...`, 'success');
     }
 

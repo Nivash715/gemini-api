@@ -1,6 +1,7 @@
 import os
-from flask import Flask, render_template, send_from_directory
-from config import UPLOAD_FOLDER, SECRET_KEY
+from flask import Flask, send_from_directory
+from flask_cors import CORS
+from config import CORS_ORIGINS, DATABASE_PATH, UPLOAD_FOLDER, SECRET_KEY
 from utils.database import init_db
 from routes.chat_routes import chat_bp
 from routes.history_routes import history_bp
@@ -11,10 +12,16 @@ def create_app():
     app = Flask(__name__)
     app.config["SECRET_KEY"] = SECRET_KEY
     app.config["MAX_CONTENT_LENGTH"] = 15 * 1024 * 1024
+    CORS(
+        app,
+        resources={
+            r"/api/*": {"origins": CORS_ORIGINS},
+            r"/uploads/*": {"origins": CORS_ORIGINS},
+        },
+    )
 
     os.makedirs(UPLOAD_FOLDER, exist_ok=True)
-    os.makedirs("database", exist_ok=True)
-    os.makedirs("static/images", exist_ok=True)
+    os.makedirs(DATABASE_PATH.parent, exist_ok=True)
 
     init_db()
 
@@ -24,8 +31,8 @@ def create_app():
     app.register_blueprint(settings_bp, url_prefix="/api")
 
     @app.route("/")
-    def index():
-        return render_template("index.html")
+    def health():
+        return {"status": "ok", "service": "gemini-backend"}
 
     @app.route("/uploads/<filename>")
     def uploaded_file(filename):

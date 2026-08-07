@@ -1,0 +1,12 @@
+{
+  "name": "gemini-web-frontend",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "start": "npx serve .",
+    "build": "echo \"Static frontend: no build step required\""
+  },
+  "devDependencies": {
+    "serve": "^14.2.4"
+  }
+}

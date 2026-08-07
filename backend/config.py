@@ -10,9 +10,14 @@ SECRET_KEY = os.getenv("SECRET_KEY", "gemini-ai-assistant-secret-key-change-in-p
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "")
 GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-2.0-flash")
 GEMINI_VISION_MODEL = os.getenv("GEMINI_VISION_MODEL", "gemini-2.0-flash")
+CORS_ORIGINS = [
+    origin.strip()
+    for origin in os.getenv("CORS_ORIGINS", "*").split(",")
+    if origin.strip()
+]
 
-DATABASE_PATH = BASE_DIR / "database" / "chat.db"
-UPLOAD_FOLDER = BASE_DIR / "uploads"
+DATABASE_PATH = Path(os.getenv("DATABASE_PATH", str(BASE_DIR / "database" / "chat.db")))
+UPLOAD_FOLDER = Path(os.getenv("UPLOAD_FOLDER", str(BASE_DIR / "uploads")))
 STATIC_IMAGES = BASE_DIR / "static" / "images"
 
 MAX_PDF_SIZE = 10 * 1024 * 1024  # 10 MB
