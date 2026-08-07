@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Gemini AI Assistant - Your intelligent AI companion">
+    <title>Gemini AI Assistant</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar Overlay (Mobile) -->
+        <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+        <!-- Left Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle sidebar">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+                    </svg>
+                </button>
+                <div class="logo">
+                    <svg class="logo-icon" width="28" height="28" viewBox="0 0 24 24">
+                        <defs>
+                            <linearGradient id="logoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" style="stop-color:#4285f4"/>
+                                <stop offset="50%" style="stop-color:#9b72cb"/>
+                                <stop offset="100%" style="stop-color:#d96570"/>
+                            </linearGradient>
+                        </defs>
+                        <path fill="url(#logoGrad)" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
+                    </svg>
+                    <span class="logo-text">Gemini</span>
+                </div>
+            </div>
+
+            <button class="new-chat-btn" id="newChatBtn">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+                </svg>
+                <span>New chat</span>
+            </button>
+
+            <div class="search-box">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" opacity="0.6">
+                    <path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C8.01 14 6 11.99 6 9.5S8.01 5 10.5 5 15 7.01 15 9.5 12.99 14 10.5 14z"/>
+                </svg>
+                <input type="text" id="searchInput" placeholder="Search chats..." autocomplete="off">
+            </div>
+
+            <nav class="chat-history" id="chatHistory">
+                <div class="history-section" id="pinnedSection">
+                    <h4 class="history-label">Pinned</h4>
+                    <ul class="history-list" id="pinnedList"></ul>
+                </div>
+                <div class="history-section" id="todaySection">
+                    <h4 class="history-label">Today</h4>
+                    <ul class="history-list" id="todayList"></ul>
+                </div>
+                <div class="history-section" id="yesterdaySection">
+                    <h4 class="history-label">Yesterday</h4>
+                    <ul class="history-list" id="yesterdayList"></ul>
+                </div>
+                <div class="history-section" id="weekSection">
+                    <h4 class="history-label">Last 7 Days</h4>
+                    <ul class="history-list" id="weekList"></ul>
+                </div>
+                <div class="history-section" id="olderSection">
+                    <h4 class="history-label">Older</h4>
+                    <ul class="history-list" id="olderList"></ul>
+                </div>
+            </nav>
+
+            <div class="sidebar-footer">
+                <button class="sidebar-action" id="utilitiesBtn">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M19.14 12.94c.04-.31.06-.63.06-.94 0-.31-.02-.63-.06-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.04.31-.06.63-.06.94s.02.63.06.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/>
+                    </svg>
+                    <span>AI Utilities</span>
+                </button>
+                <button class="sidebar-action" id="settingsBtn">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M19.14 12.94c.04-.31.06-.63.06-.94 0-.31-.02-.63-.06-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.04.31-.06.63-.06.94s.02.63.06.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/>
+                    </svg>
+                    <span>Settings</span>
+                </button>
+                <button class="sidebar-action" id="themeToggle">
+                    <svg class="theme-icon-dark" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9c0-.46-.04-.92-.1-1.36-.98 1.37-2.58 2.26-4.4 2.26-2.98 0-5.4-2.42-5.4-5.4 0-1.81.89-3.42 2.26-4.4-.44-.06-.9-.1-1.36-.1z"/>
+                    </svg>
+                    <svg class="theme-icon-light" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zM2 13h2c.55 0 1-.45 1-1s-.45-1-1-1H2c-.55 0-1 .45-1 1s.45 1 1 1zm18 0h2c.55 0 1-.45 1-1s-.45-1-1-1h-2c-.55 0-1 .45-1 1s.45 1 1 1zM11 2v2c0 .55.45 1 1 1s1-.45 1-1V2c0-.55-.45-1-1-1s-1 .45-1 1zm0 18v2c0 .55.45 1 1 1s1-.45 1-1v-2c0-.55-.45-1-1-1s-1 .45-1 1zM5.99 4.58a.996.996 0 00-1.41 0 .996.996 0 000 1.41l1.06 1.06c.39.39 1.03.39 1.41 0s.39-1.03 0-1.41L5.99 4.58zm12.37 12.37a.996.996 0 00-1.41 0 .996.996 0 000 1.41l1.06 1.06c.39.39 1.03.39 1.41 0a.996.996 0 000-1.41l-1.06-1.06zm1.06-10.96a.996.996 0 000-1.41.996.996 0 00-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06zM7.05 18.36a.996.996 0 000-1.41.996.996 0 00-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06z"/>
+                    </svg>
+                    <span class="theme-label">Dark Mode</span>
+                </button>
+                <div class="profile-section">
+                    <div class="profile-avatar">U</div>
+                    <span class="profile-name">User</span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Top Bar -->
+            <header class="top-bar">
+                <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Open menu">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+                    </svg>
+                </button>
+                <h1 class="chat-title" id="chatTitle">Gemini AI Assistant</h1>
+                <div class="top-actions">
+                    <button class="icon-btn" id="exportBtn" title="Export chat">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/>
+                        </svg>
+                    </button>
+                    <button class="icon-btn" id="deleteChatBtn" title="Delete chat">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
+                        </svg>
+                    </button>
+                </div>
+            </header>
+
+            <!-- Chat Area -->
+            <div class="chat-area" id="chatArea">
+                <!-- Welcome Screen -->
+                <div class="welcome-screen" id="welcomeScreen">
+                    <div class="welcome-logo">
+                        <svg width="64" height="64" viewBox="0 0 24 24">
+                            <defs>
+                                <linearGradient id="welcomeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" style="stop-color:#4285f4"/>
+                                    <stop offset="50%" style="stop-color:#9b72cb"/>
+                                    <stop offset="100%" style="stop-color:#d96570"/>
+                                </linearGradient>
+                            </defs>
+                            <path fill="url(#welcomeGrad)" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
+                        </svg>
+                    </div>
+                    <h2 class="welcome-title">Hello, I'm Gemini</h2>
+                    <p class="welcome-subtitle">How can I help you today?</p>
+                    <div class="suggested-prompts" id="suggestedPrompts">
+                        <button class="prompt-card" data-prompt="Explain quantum computing in simple terms">
+                            <span class="prompt-icon">💡</span>
+                            <span class="prompt-text">Explain quantum computing</span>
+                        </button>
+                        <button class="prompt-card" data-prompt="Write a Python function to sort a list">
+                            <span class="prompt-icon">💻</span>
+                            <span class="prompt-text">Write Python code</span>
+                        </button>
+                        <button class="prompt-card" data-prompt="Help me plan a healthy meal for the week">
+                            <span class="prompt-icon">🍽️</span>
+                            <span class="prompt-text">Plan healthy meals</span>
+                        </button>
+                        <button class="prompt-card" data-prompt="Create a creative story about space exploration">
+                            <span class="prompt-icon">✨</span>
+                            <span class="prompt-text">Creative writing</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Messages Container -->
+                <div class="messages-container" id="messagesContainer"></div>
+
+                <!-- Typing Indicator -->
+                <div class="typing-indicator" id="typingIndicator">
+                    <div class="typing-avatar">
+                        <svg width="24" height="24" viewBox="0 0 24 24">
+                            <path fill="url(#welcomeGrad)" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/>
+                        </svg>
+                    </div>
+                    <div class="typing-dots">
+                        <span></span><span></span><span></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Input Area -->
+            <div class="input-area">
+                <div class="input-container">
+                    <div class="input-actions-left">
+                        <button class="input-action-btn" id="uploadFileBtn" title="Upload PDF">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm4 18H6V4h7v5h5v11z"/>
+                            </svg>
+                        </button>
+                        <button class="input-action-btn" id="uploadImageBtn" title="Upload Image">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/>
+                            </svg>
+                        </button>
+                        <button class="input-action-btn" id="voiceBtn" title="Voice input">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm-1-9c0-.55.45-1 1-1s1 .45 1 1v6c0 .55-.45 1-1 1s-1-.45-1-1V5zm6 6c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/>
+                            </svg>
+                        </button>
+                        <button class="input-action-btn" id="emojiBtn" title="Emoji">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm3.5-9c.83 0 1.5-.67 1.5-1.5S16.33 8 15.5 8 14 8.67 14 9.5s.67 1.5 1.5 1.5zm-7 0c.83 0 1.5-.67 1.5-1.5S9.33 8 8.5 8 7 8.67 7 9.5 7.67 11 8.5 11zm3.5 6.5c2.33 0 4.31-1.46 5.11-3.5H6.89c.8 2.04 2.78 3.5 5.11 3.5z"/>
+                            </svg>
+                        </button>
+                    </div>
+                    <textarea
+                        id="messageInput"
+                        placeholder="Ask Gemini anything..."
+                        rows="1"
+                        maxlength="32000"
+                    ></textarea>
+                    <button class="send-btn" id="sendBtn" disabled aria-label="Send message">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+                        </svg>
+                    </button>
+                </div>
+                <div class="input-footer">
+                    <span class="char-counter" id="charCounter">0 / 32000</span>
+                    <span class="disclaimer">Gemini can make mistakes. Consider checking important information.</span>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Hidden File Inputs -->
+    <input type="file" id="pdfInput" accept=".pdf" hidden>
+    <input type="file" id="imageInput" accept="image/jpeg,image/png,image/webp,image/gif" hidden>
+
+    <!-- Settings Modal -->
+    <div class="modal" id="settingsModal">
+        <div class="modal-backdrop"></div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Settings</h2>
+                <button class="modal-close" data-close="settingsModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="setting-group">
+                    <label>Theme</label>
+                    <div class="theme-options">
+                        <button class="theme-option active" data-theme="dark">Dark</button>
+                        <button class="theme-option" data-theme="light">Light</button>
+                    </div>
+                </div>
+                <div class="setting-group">
+                    <label for="temperatureSlider">Temperature: <span id="temperatureValue">0.7</span></label>
+                    <input type="range" id="temperatureSlider" min="0" max="1" step="0.1" value="0.7">
+                </div>
+                <div class="setting-group">
+                    <label for="maxTokensInput">Max Tokens</label>
+                    <input type="number" id="maxTokensInput" min="256" max="8192" value="2048">
+                </div>
+                <div class="setting-group">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="autoScrollCheck" checked>
+                        Auto-scroll to new messages
+                    </label>
+                </div>
+                <div class="setting-group">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="voiceEnabledCheck" checked>
+                        Enable voice responses
+                    </label>
+                </div>
+                <div class="setting-actions">
+                    <button class="btn-danger" id="clearHistoryBtn">Clear All History</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Export Modal -->
+    <div class="modal" id="exportModal">
+        <div class="modal-backdrop"></div>
+        <div class="modal-content modal-sm">
+            <div class="modal-header">
+                <h2>Export Chat</h2>
+                <button class="modal-close" data-close="exportModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="export-options">
+                    <button class="export-option" data-format="txt">
+                        <span class="export-icon">📄</span>
+                        <span>Text (.txt)</span>
+                    </button>
+                    <button class="export-option" data-format="md">
+                        <span class="export-icon">📝</span>
+                        <span>Markdown (.md)</span>
+                    </button>
+                    <button class="export-option" data-format="pdf">
+                        <span class="export-icon">📕</span>
+                        <span>PDF (.pdf)</span>
+                    </button>
+                    <button class="export-option" data-format="docx">
+                        <span class="export-icon">📘</span>
+                        <span>Word (.docx)</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Utilities Modal -->
+    <div class="modal" id="utilitiesModal">
+        <div class="modal-backdrop"></div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>AI Utilities</h2>
+                <button class="modal-close" data-close="utilitiesModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="utilities-grid">
+                    <button class="utility-card" data-utility="grammar">
+                        <span class="utility-icon">✏️</span>
+                        <span class="utility-name">Grammar Checker</span>
+                    </button>
+                    <button class="utility-card" data-utility="resume">
+                        <span class="utility-icon">📋</span>
+                        <span class="utility-name">Resume Analyzer</span>
+                    </button>
+                    <button class="utility-card" data-utility="cover_letter">
+                        <span class="utility-icon">📨</span>
+                        <span class="utility-name">Cover Letter</span>
+                    </button>
+                    <button class="utility-card" data-utility="email">
+                        <span class="utility-icon">📧</span>
+                        <span class="utility-name">Email Generator</span>
+                    </button>
+                    <button class="utility-card" data-utility="blog">
+                        <span class="utility-icon">📰</span>
+                        <span class="utility-name">Blog Writer</span>
+                    </button>
+                    <button class="utility-card" data-utility="code">
+                        <span class="utility-icon">💻</span>
+                        <span class="utility-name">Code Generator</span>
+                    </button>
+                    <button class="utility-card" data-utility="sql">
+                        <span class="utility-icon">🗄️</span>
+                        <span class="utility-name">SQL Generator</span>
+                    </button>
+                    <button class="utility-card" data-utility="regex">
+                        <span class="utility-icon">🔍</span>
+                        <span class="utility-name">Regex Generator</span>
+                    </button>
+                    <button class="utility-card" data-utility="json">
+                        <span class="utility-icon">{ }</span>
+                        <span class="utility-name">JSON Formatter</span>
+                    </button>
+                    <button class="utility-card" data-utility="translate">
+                        <span class="utility-icon">🌐</span>
+                        <span class="utility-name">Translator</span>
+                    </button>
+                    <button class="utility-card" data-utility="summarize">
+                        <span class="utility-icon">📑</span>
+                        <span class="utility-name">Summarizer</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Image Transform Modal -->
+    <div class="modal" id="imageTransformModal">
+        <div class="modal-backdrop"></div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Image Transformation</h2>
+                <button class="modal-close" data-close="imageTransformModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="transform-grid" id="transformGrid">
+                    <button class="transform-option" data-style="anime">Anime</button>
+                    <button class="transform-option" data-style="ghibli">Ghibli</button>
+                    <button class="transform-option" data-style="pixar">Pixar</button>
+                    <button class="transform-option" data-style="remove_background">Remove BG</button>
+                    <button class="transform-option" data-style="replace_background">Replace BG</button>
+                    <button class="transform-option" data-style="black_white">B&amp;W</button>
+                    <button class="transform-option" data-style="sketch">Sketch</button>
+                    <button class="transform-option" data-style="oil_painting">Oil Painting</button>
+                    <button class="transform-option" data-style="watercolor">Watercolor</button>
+                    <button class="transform-option" data-style="cartoon">Cartoon</button>
+                    <button class="transform-option" data-style="portrait">Portrait</button>
+                    <button class="transform-option" data-style="enhance">Enhance</button>
+                    <button class="transform-option" data-style="upscale">Upscale</button>
+                    <button class="transform-option" data-style="restore">Restore</button>
+                </div>
+                <div class="setting-group" style="margin-top:1rem">
+                    <label for="transformPrompt">Custom prompt (optional)</label>
+                    <textarea id="transformPrompt" rows="2" placeholder="Describe the transformation..."></textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Emoji Picker -->
+    <div class="emoji-picker" id="emojiPicker">
+        <div class="emoji-grid" id="emojiGrid"></div>
+    </div>
+
+    <!-- Toast Notifications -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- Error Banner -->
+    <div class="error-banner" id="errorBanner">
+        <span class="error-message" id="errorMessage"></span>
+        <button class="error-close" id="errorClose">&times;</button>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner">
+            <div class="spinner-ring"></div>
+            <span>Processing...</span>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.6/marked.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>

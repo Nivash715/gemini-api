@@ -1,0 +1,25 @@
+# Python cache files
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*~
+
+# Virtual environment
+venv/
+env/
+.venv/
+
+# Environment variables
+.env
+
+# SQLite database
+database/
+
+# Uploads and runtime files
+uploads/
+
+# Editor directories/files
+.vscode/
+.idea/
+*.swp

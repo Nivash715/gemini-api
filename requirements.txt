@@ -1,0 +1,11 @@
+Flask
+google-generativeai
+python-dotenv
+Pillow
+PyMuPDF
+reportlab
+markdown
+SpeechRecognition
+pyttsx3
+requests
+bleach
