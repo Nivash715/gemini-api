@@ -1,6 +1,6 @@
 import { writeFileSync } from "node:fs";
 
-const apiBaseUrl = process.env.VITE_API_BASE_URL || process.env.GEMINI_API_BASE_URL || "";
+const apiBaseUrl = process.env.VITE_API_BASE_URL || process.env.GEMINI_API_BASE_URL || "https://gemini-api-1-d8vz.onrender.com";
 
 writeFileSync(
   new URL("../config.js", import.meta.url),
